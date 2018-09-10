@@ -1,0 +1,94 @@
+#!/usr/bin/expect -f
+
+## v1.7 ssciriha Jan 17th 2012
+# This script uses scp and expect to retrieve the backup tarball from all the servers
+set timeout -1
+set pass "labbws"
+set done 0
+set local_backup_dir_BMS "/doxstore2/backup_location/BMS/"
+set local_backup_dir_PCRF "/doxstore2/backup_location/PCRF/"
+set local_backup_dir_DRA "/doxstore2/backup_location/DRA/"
+set local_backup_dir_SDB "/doxstore2/backup_location/SDB/"
+set local_backup_dir_SWITCH "/doxstore2/backup_location/SWITCH/"
+set PCRF_PASS "Passw0rd"
+set PCRF_PATH "/opt/bpc/backup/TARFILE"
+set PCRF_HOST "bonpcf02a"
+set DRA_PASS "Passw0rd"
+set DRA_PATH "/opt/bpc/backup/TARFILE"
+set DRA_HOST "bondra02a"
+set BMS_PASS "Passw0rd"
+set BMS_PATH "/opt/bwc/backup/TARFILE"
+set BMS_HOST "bonbms02a"
+set SDB_PASS "Passw0rd"
+set SDB_PATH "/u01/app/oracle/widespan/backups/TARFILE"
+set SDB_HOST "bonspr02a"
+set SWITCH_PASS "admin"
+set SWITCH_HOST "10.108.92.126"
+set current_date [exec date +%d.%m.%y]
+set bprompt "#"
+# trick to pass in command-line args to spawn
+#eval spawn scp $argv
+
+#PCRF Section
+spawn scp root@$PCRF_HOST:$PCRF_PATH/*$current_date* $local_backup_dir_PCRF
+expect {
+        "password:" {send "$PCRF_PASS\r"; exp_continue}
+        "yes/no)?" {send "yes\r"; expect "password:" {send "$PCRF_PASS\r"; exp_continue}}
+        eof
+}
+sleep 1
+#expect "$bprompt"
+
+#DRA Section
+spawn scp root@$DRA_HOST:$DRA_PATH/*$current_date* $local_backup_dir_DRA
+expect {
+        "password:" {send "$DRA_PASS\r"; exp_continue}
+        "yes/no)?" {send "yes\r"; expect "password:" {send "$DRA_PASS\r";exp_continue}}
+        eof
+}
+
+#BMS Section
+spawn scp root@$BMS_HOST:$BMS_PATH/*$current_date* $local_backup_dir_BMS
+expect {
+        "password:" {send "$BMS_PASS\r";exp_continue}
+        "yes/no)?" {send "yes\r"; expect "password:" {send "$BMS_PASS\r";exp_continue}}
+        eof
+}
+
+#SDB Section
+spawn scp root@$SDB_HOST:$SDB_PATH/*$current_date* $local_backup_dir_SDB
+expect {
+        "password:" {send "$SDB_PASS\r";exp_continue}
+        "yes/no)?" {send "yes\r"; expect "password:" {send "$SDB_PASS\r";exp_continue}}
+        eof
+}
+
+#Switch Section
+#Following section first copies the switch config followed by the switch image and bootfiles
+spawn scp admin@$SWITCH_HOST:getcfg $local_backup_dir_SWITCH\getcfg-$current_date-$SWITCH_HOST
+expect {
+        "password:" {send "$SWITCH_PASS\r";exp_continue}
+        "yes/no)?" {send "yes\r"; expect "password:" {send "$SWITCH_PASS\r";exp_continue}}
+        eof
+}
+
+spawn scp admin@$SWITCH_HOST:getimg1 $local_backup_dir_SWITCH\getimg1-$current_date-$SWITCH_HOST
+expect {
+        "password:" {send "$SWITCH_PASS\r";exp_continue}
+        "yes/no)?" {send "yes\r"; expect "password:" {send "$SWITCH_PASS\r";exp_continue}}
+        eof
+}
+
+spawn scp admin@$SWITCH_HOST:getimg2 $local_backup_dir_SWITCH\getimg2-$current_date-$SWITCH_HOST
+expect {
+        "password:" {send "$SWITCH_PASS\r";exp_continue}
+        "yes/no)?" {send "yes\r"; expect "password:" {send "$SWITCH_PASS\r";exp_continue}}
+        eof
+}
+
+spawn scp admin@$SWITCH_HOST:getboot $local_backup_dir_SWITCH\getboot-$current_date-$SWITCH_HOST
+expect {
+        "password:" {send "$SWITCH_PASS\r";exp_continue}
+        "yes/no)?" {send "yes\r"; expect "password:" {send "$SWITCH_PASS\r";exp_continue}}
+        eof
+}

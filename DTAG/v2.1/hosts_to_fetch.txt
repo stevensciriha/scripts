@@ -1,0 +1,13 @@
+# This configuration file is where all the backup targets are configured
+# It is designed to work with version 1.0 of the Read_Hosts.sh script
+# The format MUST match the following pattern:
+#
+# HOSTNAME/IP ROOT_PASSWORD APPLICATION(DRA, SDB, SWITCH, BMS)
+# 
+# Example:
+#
+# 192.168.10.5 rootpass DRA
+# houstonPCRF root PCRF
+#
+       
+

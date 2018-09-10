@@ -1,0 +1,27 @@
+** Installation Instructions for PCRF_Backup.sh v2.2**
+       
+1.	Copy the tar file PCRF_Backup_v22.tar to a staging directory ex. /stage
+2.	Become the root user
+3.	# cd /
+4.	# tar xvf /stage/PCRF_Backup_v22.tar
+5.	Script and configuration file are extracted to the directory /opt/Amdocs/backup_scripts
+6.	# ls  /opt/Amdocs/backup_scripts/
+ 
+        PCRF_Backup.sh  system_backup_filelist.conf README
+
+7.	Open the script up for editing and update the following variables with the latest RMA root credentials:
+
+                XPC_USERNAME="<username>"
+                XPC_PASSWORD="<password>"
+
+8.	Add the script to the ROOT cron. Script need to be set up to run once daily. Example:
+
+<MINUTE> <HOUR> * * * /opt/Amdocs/backup_scripts/PCRF_Backup.sh  2> /dev/null
+
+9. Backup file and backup log will be generated under /doxstore2/backup/ 
+
+10. To extract the contents of the tarfile use the following command:
+
+tar xvf <TARFILE>
+
+

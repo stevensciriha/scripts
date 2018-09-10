@@ -1,0 +1,8 @@
+/var/log/JMSlog /var/log/SOAPlog /var/log/GXlog /var/log/SDBPROVlog /var/log/PCPROVlog{
+   daily
+   size 1k
+   rotate 3
+   postrotate
+   /bin/kill -HUP `cat /tmp/LogSplitter.pid 2> /dev/null` 2> /dev/null || true
+   endscript
+}

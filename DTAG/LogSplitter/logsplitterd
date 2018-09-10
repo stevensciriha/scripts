@@ -1,0 +1,50 @@
+#! /bin/bash
+#
+#   v1.0 ssciriha LogSplitter.sh START/STOP script
+# chkconfig: 2345 90 60
+# description: LogSplitting Script
+
+
+#Source function library
+. /etc/init.d/functions
+
+
+prog="LogSplitter"
+path_to_script="/WideSpan/mon/LogSplitter.pl"
+logfile_to_read="/var/log/messages"
+config="/WideSpan/mon/SplitConfig.cfg"
+
+start() {
+        echo "Starting $prog: "
+        ls /tmp/LogSplitter.pid >>/dev/null 2>&1
+        if [ -e $path_to_script -a $? != 0 ]; then
+              exec $path_to_script $logfile_to_read $config&
+        else
+               echo "Logging Script does not exist or process is already running"
+        fi
+}
+
+stop() {
+        echo "Stopping $prog: "
+        ls -la /tmp/LogSplitter.pid >>/dev/null 2>&1
+        if [ $? != 0 ]; then
+            echo "cannot stop LogSplitter: Script is not running."
+            exit 1
+        fi
+        killproc -p /tmp/LogSplitter.pid
+        return $?
+}
+
+case "$1" in
+  start)
+        start
+        ;;
+  stop)
+        stop
+        ;;
+  *)
+        echo "Usage: $0 {start|stop}"
+        exit 1
+esac
+exit $?
+

@@ -1,0 +1,29 @@
+** Installation Instructions for DRA_Backup.sh v2.0**
+       
+1.	Copy the tar file DRA_Backup_v20.tar to a staging directory ex. /stage
+2.	Become the root user
+3.	# cd /
+4.	# tar xvf /stage/DRA_Backup_v20.tar
+5.	Script and configuration file are extracted to the directory /opt/Amdocs/backup_scripts
+6.	# ls  /opt/Amdocs/backup_scripts/
+ 
+        DRA_Backup.sh  system_backup_filelist.conf README
+7.      Open the file for editing and update the following variables accordingly:
+
+        # Because script is to be run in crontab credentials need to be hardcoded
+        XPC_USERNAME="root"
+        XPC_PASSWORD="root"
+
+        # SLF_NODE determines if the DRA does the SLF function or not - 1: SLF NODE 0: NON-SLF NODE
+        SLF_NODE=0
+         
+8.	Add the script DRA_Backup.sh to the ROOT cron. Script need to be set up to run once daily. Example:
+
+<MINUTE> <HOUR> * * * /opt/Amdocs/backup_scripts/DRA_Backup.sh  2> /dev/null
+
+9. Backup file and backup log will be generated under /doxstore2/backup/ 
+
+10. To extract the contents of the tarfile use the following command:
+
+tar xvf <TARFILE>
+

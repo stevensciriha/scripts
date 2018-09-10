@@ -1,0 +1,56 @@
+#!/usr/bin/expect -f
+
+## v2.0 ssciriha Jan 17th 2012
+# This script uses scp and expect to retrieve the backup tarball from all the servers
+set timeout -1
+set remote_backup_dir "/doxstore2/backup/"
+set local_backup_dir "/doxstore1/backup_location/" 
+# trick to pass in command-line args to spawn
+set host [lindex $argv 0]
+set pass [lindex $argv 1]
+set app [lindex $argv 2]
+set currentdate [exec date +%d.%m.%y]
+
+#Switch Section
+#Following section first copies the switch config followed by the switch image and bootfiles
+if { $app == "SWITCH" } {
+spawn scp admin@$host:getcfg $local_backup_dir$app/cfg_$currentdate-$host
+expect {
+        "password:" {send "$pass\r";exp_continue}
+        "yes/no)?" {send "yes\r"; expect "password:" {send "$pass\r";exp_continue}}
+        eof
+}
+
+spawn scp admin@$host:getimg1 $local_backup_dir$app/img1_$currentdate-$host
+expect {
+        "password:" {send "$pass\r";exp_continue}
+        "yes/no)?" {send "yes\r"; expect "password:" {send "$pass\r";exp_continue}}
+        eof
+}
+
+spawn scp admin@$host:getimg2 $local_backup_dir$app/img2_$currentdate-$host
+expect {
+        "password:" {send "$pass\r";exp_continue}
+        "yes/no)?" {send "yes\r"; expect "password:" {send "$pass\r";exp_continue}}
+        eof
+}
+
+spawn scp admin@$host:getboot $local_backup_dir$app/boot_$currentdate-$host
+expect {
+        "password:" {send "$pass\r";exp_continue}
+        "yes/no)?" {send "yes\r"; expect "password:" {send "$pass\r";exp_continue}}
+        eof
+}
+exit
+}
+
+#eval spawn scp $argv
+#PCRF Section
+spawn scp root@$host:/doxstore2/backup/*$currentdate* $local_backup_dir$app
+expect {
+        "password:" {send "$pass\r"; exp_continue}
+        "yes/no)?" {send "yes\r"; expect "password:" {send "$pass\r"; exp_continue}}
+        eof
+}
+sleep 1
+
